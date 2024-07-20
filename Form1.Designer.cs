@@ -43,13 +43,13 @@
             button3 = new Button();
             categoryComboBox = new ComboBox();
             label4 = new Label();
-            numericUpDown2 = new NumericUpDown();
+            prodPrice = new NumericUpDown();
             button2 = new Button();
-            button1 = new Button();
-            numericUpDown1 = new NumericUpDown();
+            addProductButton = new Button();
+            prodQuantity = new NumericUpDown();
             label3 = new Label();
             label2 = new Label();
-            textBox1 = new TextBox();
+            prodName = new TextBox();
             label1 = new Label();
             groupBox2 = new GroupBox();
             dataGridView1 = new DataGridView();
@@ -73,8 +73,8 @@
             menuStrip1.SuspendLayout();
             statusStrip1.SuspendLayout();
             groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)numericUpDown2).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)prodPrice).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)prodQuantity).BeginInit();
             groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)categoriesBindingSource1).BeginInit();
@@ -159,13 +159,13 @@
             groupBox1.Controls.Add(button3);
             groupBox1.Controls.Add(categoryComboBox);
             groupBox1.Controls.Add(label4);
-            groupBox1.Controls.Add(numericUpDown2);
+            groupBox1.Controls.Add(prodPrice);
             groupBox1.Controls.Add(button2);
-            groupBox1.Controls.Add(button1);
-            groupBox1.Controls.Add(numericUpDown1);
+            groupBox1.Controls.Add(addProductButton);
+            groupBox1.Controls.Add(prodQuantity);
             groupBox1.Controls.Add(label3);
             groupBox1.Controls.Add(label2);
-            groupBox1.Controls.Add(textBox1);
+            groupBox1.Controls.Add(prodName);
             groupBox1.Controls.Add(label1);
             groupBox1.Location = new Point(27, 54);
             groupBox1.Name = "groupBox1";
@@ -200,12 +200,12 @@
             label4.TabIndex = 0;
             label4.Text = "Category";
             // 
-            // numericUpDown2
+            // prodPrice
             // 
-            numericUpDown2.Location = new Point(103, 186);
-            numericUpDown2.Name = "numericUpDown2";
-            numericUpDown2.Size = new Size(180, 31);
-            numericUpDown2.TabIndex = 4;
+            prodPrice.Location = new Point(103, 186);
+            prodPrice.Name = "prodPrice";
+            prodPrice.Size = new Size(180, 31);
+            prodPrice.TabIndex = 4;
             // 
             // button2
             // 
@@ -217,21 +217,22 @@
             button2.Text = "&Save";
             button2.UseVisualStyleBackColor = true;
             // 
-            // button1
+            // addProductButton
             // 
-            button1.Location = new Point(21, 234);
-            button1.Name = "button1";
-            button1.Size = new Size(112, 34);
-            button1.TabIndex = 5;
-            button1.Text = "&Add";
-            button1.UseVisualStyleBackColor = true;
+            addProductButton.Location = new Point(21, 234);
+            addProductButton.Name = "addProductButton";
+            addProductButton.Size = new Size(112, 34);
+            addProductButton.TabIndex = 5;
+            addProductButton.Text = "&Add";
+            addProductButton.UseVisualStyleBackColor = true;
+            addProductButton.Click += AddProduct;
             // 
-            // numericUpDown1
+            // prodQuantity
             // 
-            numericUpDown1.Location = new Point(105, 136);
-            numericUpDown1.Name = "numericUpDown1";
-            numericUpDown1.Size = new Size(180, 31);
-            numericUpDown1.TabIndex = 3;
+            prodQuantity.Location = new Point(105, 136);
+            prodQuantity.Name = "prodQuantity";
+            prodQuantity.Size = new Size(180, 31);
+            prodQuantity.TabIndex = 3;
             // 
             // label3
             // 
@@ -251,12 +252,12 @@
             label2.TabIndex = 0;
             label2.Text = "Quantity";
             // 
-            // textBox1
+            // prodName
             // 
-            textBox1.Location = new Point(102, 40);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(271, 31);
-            textBox1.TabIndex = 1;
+            prodName.Location = new Point(102, 40);
+            prodName.Name = "prodName";
+            prodName.Size = new Size(271, 31);
+            prodName.TabIndex = 1;
             // 
             // label1
             // 
@@ -447,8 +448,8 @@
             statusStrip1.PerformLayout();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)numericUpDown2).EndInit();
-            ((System.ComponentModel.ISupportInitialize)numericUpDown1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)prodPrice).EndInit();
+            ((System.ComponentModel.ISupportInitialize)prodQuantity).EndInit();
             groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ((System.ComponentModel.ISupportInitialize)categoriesBindingSource1).EndInit();
@@ -477,13 +478,13 @@
         private DataGridView categoriesDataGrid;
         private Label label3;
         private Label label2;
-        private TextBox textBox1;
+        private TextBox prodName;
         private Label label1;
         private Button button2;
-        private Button button1;
-        private NumericUpDown numericUpDown1;
+        private Button addProductButton;
+        private NumericUpDown prodQuantity;
         private Label label4;
-        private NumericUpDown numericUpDown2;
+        private NumericUpDown prodPrice;
         private Button button3;
         private ComboBox categoryComboBox;
         private GroupBox groupBox3;

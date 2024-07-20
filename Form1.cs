@@ -28,23 +28,25 @@ namespace InventoryApplication
             foreach (ICategories category in categories)
             {
                 bindingSource.Add(category);
-                categoryComboBox.Items.Add(bindingSource);
-                categoryComboBox.Text = category.Name;
+                categoryComboBox.Items.Add(category.Name);
                 
+
             }
             dataGridView1.DataSource = bindingSource;
-            
-            
+
+
+
         }
 
         private void SetProducts(IEnumerable<IProducts> products)
         {
             dataGridView2.AutoGenerateColumns = false;
             var bindingSource = new BindingSource();
-            foreach(IProducts product in products)
+            foreach (IProducts product in products)
             {
                 bindingSource.Add(product);
             }
+
             dataGridView2.DataSource = bindingSource;
         }
 
@@ -56,6 +58,19 @@ namespace InventoryApplication
         private void OnProductSelected(object sender, EventArgs e)
         {
 
+        }
+
+        private void AddProduct(object sender, EventArgs e)
+        {
+            var product = new Products()
+            {
+                Name = prodName.Text,
+                Quantity = (int)prodQuantity.Value,
+                Price = (int)prodPrice.Value,
+                CategoryId = (int)categoryComboBox.SelectedItem,
+
+            };
+            _productsRepository.AddProduct(product);
         }
     }
 }
