@@ -70,6 +70,7 @@
             categoryIdDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             nameDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             totalDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            categoriesBindingSource2 = new BindingSource(components);
             menuStrip1.SuspendLayout();
             statusStrip1.SuspendLayout();
             groupBox1.SuspendLayout();
@@ -82,6 +83,7 @@
             ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)productsBindingSource).BeginInit();
             ((System.ComponentModel.ISupportInitialize)categoriesBindingSource).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)categoriesBindingSource2).BeginInit();
             SuspendLayout();
             // 
             // menuStrip1
@@ -185,11 +187,14 @@
             // 
             // categoryComboBox
             // 
+            categoryComboBox.DataSource = categoriesBindingSource2;
+            categoryComboBox.DisplayMember = "Name";
             categoryComboBox.FormattingEnabled = true;
             categoryComboBox.Location = new Point(104, 86);
             categoryComboBox.Name = "categoryComboBox";
             categoryComboBox.Size = new Size(267, 33);
             categoryComboBox.TabIndex = 2;
+            categoryComboBox.ValueMember = "CategoryId";
             // 
             // label4
             // 
@@ -203,6 +208,7 @@
             // prodPrice
             // 
             prodPrice.Location = new Point(103, 186);
+            prodPrice.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
             prodPrice.Name = "prodPrice";
             prodPrice.Size = new Size(180, 31);
             prodPrice.TabIndex = 4;
@@ -427,6 +433,10 @@
             totalDataGridViewTextBoxColumn.Name = "totalDataGridViewTextBoxColumn";
             totalDataGridViewTextBoxColumn.Width = 150;
             // 
+            // categoriesBindingSource2
+            // 
+            categoriesBindingSource2.DataSource = typeof(Models.Categories);
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
@@ -457,6 +467,7 @@
             ((System.ComponentModel.ISupportInitialize)dataGridView2).EndInit();
             ((System.ComponentModel.ISupportInitialize)productsBindingSource).EndInit();
             ((System.ComponentModel.ISupportInitialize)categoriesBindingSource).EndInit();
+            ((System.ComponentModel.ISupportInitialize)categoriesBindingSource2).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -505,5 +516,6 @@
         private DataGridViewTextBoxColumn createdDateDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn categoryIdDataGridViewTextBoxColumn2;
         private BindingSource productsBindingSource;
+        private BindingSource categoriesBindingSource2;
     }
 }

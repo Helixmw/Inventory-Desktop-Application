@@ -8,6 +8,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace InventoryApplication.DataAccess
 {
@@ -22,12 +23,22 @@ namespace InventoryApplication.DataAccess
             }
         }
 
-        public void Create(Categories Value)
+        public Products Create(Products Value)
         {
             using (IDbConnection con = new SQLiteConnection(LoadConnectionString()))
             {
-                con.Execute($"insert into Products (Name,CategoryId,Price,Quantity,Price) values (@Name, @CategoryId, @Price, @Quantity)", Value);
+                con.Execute($"insert into Products (Name,CategoryId,Price,Quantity) values (@Name, @CategoryId, @Price, @Quantity)", Value);
+                return GetPreviouslyEntered();            
+    
+            }
+        }
 
+        private Products GetPreviouslyEntered()
+        {
+            using (IDbConnection con = new SQLiteConnection(LoadConnectionString()))
+            {
+                var result = con.Query<Products>("select * from Products", new DynamicParameters());
+                return result.Last();
             }
         }
 
