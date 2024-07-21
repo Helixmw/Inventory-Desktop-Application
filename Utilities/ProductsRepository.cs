@@ -32,7 +32,20 @@ namespace InventoryApplication.Utilities
             }
             catch (Exception)
             {
-                throw new DatabaseOperationException("Unable to add to the database");
+                throw new DatabaseOperationException("Something went wrong. Unable to add this product");
+            }
+        }
+
+        public void EditProduct(Products product)
+        {
+            try
+            {
+
+            _productsAccess.UpdateProduct(product);
+            }
+            catch (Exception)
+            {
+                throw new DatabaseOperationException("Something went wrong. Unable to update this product");
             }
         }
 
@@ -43,19 +56,18 @@ namespace InventoryApplication.Utilities
             RefreshTable(products);
         }
 
-        public IProducts GetProduct(int id)
-        {
-            return null;
-        }
 
-        public void UpdateProduct(IProducts product)
-        {
-
-        }
 
         public void DeleteProduct(int id)
         {
-
+            try
+            {
+                _productsAccess.DeleteProduct(id);
+            }
+            catch (Exception)
+            {
+                throw new DatabaseOperationException("Something went wrong. Unable to delete this product");
+            }
         }
 
 
