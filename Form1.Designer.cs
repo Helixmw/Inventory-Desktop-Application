@@ -38,13 +38,12 @@
             aboutToolStripMenuItem = new ToolStripMenuItem();
             statusStrip1 = new StatusStrip();
             toolStripStatusLabel = new ToolStripStatusLabel();
-            toolStripProgressBar = new ToolStripProgressBar();
             groupBox1 = new GroupBox();
-            button3 = new Button();
+            resetButton = new Button();
             categoryComboBox = new ComboBox();
+            categoriesBindingSource2 = new BindingSource(components);
             label4 = new Label();
             prodPrice = new NumericUpDown();
-            button2 = new Button();
             addProductButton = new Button();
             prodQuantity = new NumericUpDown();
             label3 = new Label();
@@ -61,19 +60,21 @@
             dataGridView2 = new DataGridView();
             productIdDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             nameDataGridViewTextBoxColumn2 = new DataGridViewTextBoxColumn();
+            categoryIdDataGridViewTextBoxColumn2 = new DataGridViewTextBoxColumn();
+            categoryNameDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             quantityDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             priceDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             createdDateDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            categoryIdDataGridViewTextBoxColumn2 = new DataGridViewTextBoxColumn();
+            productTableBindingSource = new BindingSource(components);
             productsBindingSource = new BindingSource(components);
             categoriesBindingSource = new BindingSource(components);
             categoryIdDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             nameDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             totalDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            categoriesBindingSource2 = new BindingSource(components);
             menuStrip1.SuspendLayout();
             statusStrip1.SuspendLayout();
             groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)categoriesBindingSource2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)prodPrice).BeginInit();
             ((System.ComponentModel.ISupportInitialize)prodQuantity).BeginInit();
             groupBox2.SuspendLayout();
@@ -81,9 +82,9 @@
             ((System.ComponentModel.ISupportInitialize)categoriesBindingSource1).BeginInit();
             groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)productTableBindingSource).BeginInit();
             ((System.ComponentModel.ISupportInitialize)productsBindingSource).BeginInit();
             ((System.ComponentModel.ISupportInitialize)categoriesBindingSource).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)categoriesBindingSource2).BeginInit();
             SuspendLayout();
             // 
             // menuStrip1
@@ -138,7 +139,7 @@
             // statusStrip1
             // 
             statusStrip1.ImageScalingSize = new Size(24, 24);
-            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel, toolStripProgressBar });
+            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel });
             statusStrip1.Location = new Point(0, 859);
             statusStrip1.Name = "statusStrip1";
             statusStrip1.Size = new Size(1119, 32);
@@ -151,18 +152,12 @@
             toolStripStatusLabel.Size = new Size(88, 25);
             toolStripStatusLabel.Text = "Loading...";
             // 
-            // toolStripProgressBar
-            // 
-            toolStripProgressBar.Name = "toolStripProgressBar";
-            toolStripProgressBar.Size = new Size(100, 24);
-            // 
             // groupBox1
             // 
-            groupBox1.Controls.Add(button3);
+            groupBox1.Controls.Add(resetButton);
             groupBox1.Controls.Add(categoryComboBox);
             groupBox1.Controls.Add(label4);
             groupBox1.Controls.Add(prodPrice);
-            groupBox1.Controls.Add(button2);
             groupBox1.Controls.Add(addProductButton);
             groupBox1.Controls.Add(prodQuantity);
             groupBox1.Controls.Add(label3);
@@ -176,14 +171,16 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "Add New Item";
             // 
-            // button3
+            // resetButton
             // 
-            button3.Location = new Point(279, 234);
-            button3.Name = "button3";
-            button3.Size = new Size(112, 34);
-            button3.TabIndex = 7;
-            button3.Text = "&Reset";
-            button3.UseVisualStyleBackColor = true;
+            resetButton.Enabled = false;
+            resetButton.Location = new Point(147, 234);
+            resetButton.Name = "resetButton";
+            resetButton.Size = new Size(112, 34);
+            resetButton.TabIndex = 7;
+            resetButton.Text = "&Reset";
+            resetButton.UseVisualStyleBackColor = true;
+            resetButton.Click += OnResetClick;
             // 
             // categoryComboBox
             // 
@@ -195,6 +192,10 @@
             categoryComboBox.Size = new Size(267, 33);
             categoryComboBox.TabIndex = 2;
             categoryComboBox.ValueMember = "CategoryId";
+            // 
+            // categoriesBindingSource2
+            // 
+            categoriesBindingSource2.DataSource = typeof(Models.Categories);
             // 
             // label4
             // 
@@ -208,20 +209,10 @@
             // prodPrice
             // 
             prodPrice.Location = new Point(103, 186);
-            prodPrice.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
+            prodPrice.Maximum = new decimal(new int[] { 100000000, 0, 0, 0 });
             prodPrice.Name = "prodPrice";
             prodPrice.Size = new Size(180, 31);
             prodPrice.TabIndex = 4;
-            // 
-            // button2
-            // 
-            button2.Enabled = false;
-            button2.Location = new Point(151, 234);
-            button2.Name = "button2";
-            button2.Size = new Size(112, 34);
-            button2.TabIndex = 6;
-            button2.Text = "&Save";
-            button2.UseVisualStyleBackColor = true;
             // 
             // addProductButton
             // 
@@ -236,9 +227,12 @@
             // prodQuantity
             // 
             prodQuantity.Location = new Point(105, 136);
+            prodQuantity.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
+            prodQuantity.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             prodQuantity.Name = "prodQuantity";
             prodQuantity.Size = new Size(180, 31);
             prodQuantity.TabIndex = 3;
+            prodQuantity.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // label3
             // 
@@ -264,6 +258,7 @@
             prodName.Name = "prodName";
             prodName.Size = new Size(271, 31);
             prodName.TabIndex = 1;
+            prodName.KeyUp += OnNameKeyUp;
             // 
             // label1
             // 
@@ -282,7 +277,7 @@
             groupBox2.Size = new Size(612, 289);
             groupBox2.TabIndex = 0;
             groupBox2.TabStop = false;
-            groupBox2.Text = "Storage Information";
+            groupBox2.Text = "Storage Catalogues";
             // 
             // dataGridView1
             // 
@@ -304,15 +299,16 @@
             categoryIdDataGridViewTextBoxColumn1.HeaderText = "ID";
             categoryIdDataGridViewTextBoxColumn1.MinimumWidth = 8;
             categoryIdDataGridViewTextBoxColumn1.Name = "categoryIdDataGridViewTextBoxColumn1";
+            categoryIdDataGridViewTextBoxColumn1.Visible = false;
             categoryIdDataGridViewTextBoxColumn1.Width = 150;
             // 
             // nameDataGridViewTextBoxColumn1
             // 
+            nameDataGridViewTextBoxColumn1.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             nameDataGridViewTextBoxColumn1.DataPropertyName = "Name";
             nameDataGridViewTextBoxColumn1.HeaderText = "Name";
             nameDataGridViewTextBoxColumn1.MinimumWidth = 8;
             nameDataGridViewTextBoxColumn1.Name = "nameDataGridViewTextBoxColumn1";
-            nameDataGridViewTextBoxColumn1.Width = 150;
             // 
             // totalDataGridViewTextBoxColumn1
             // 
@@ -341,8 +337,8 @@
             // 
             dataGridView2.AutoGenerateColumns = false;
             dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView2.Columns.AddRange(new DataGridViewColumn[] { productIdDataGridViewTextBoxColumn, nameDataGridViewTextBoxColumn2, quantityDataGridViewTextBoxColumn, priceDataGridViewTextBoxColumn, createdDateDataGridViewTextBoxColumn, categoryIdDataGridViewTextBoxColumn2 });
-            dataGridView2.DataSource = productsBindingSource;
+            dataGridView2.Columns.AddRange(new DataGridViewColumn[] { productIdDataGridViewTextBoxColumn, nameDataGridViewTextBoxColumn2, categoryIdDataGridViewTextBoxColumn2, categoryNameDataGridViewTextBoxColumn, quantityDataGridViewTextBoxColumn, priceDataGridViewTextBoxColumn, createdDateDataGridViewTextBoxColumn });
+            dataGridView2.DataSource = productTableBindingSource;
             dataGridView2.Location = new Point(18, 45);
             dataGridView2.Name = "dataGridView2";
             dataGridView2.RowHeadersWidth = 62;
@@ -363,9 +359,26 @@
             // 
             nameDataGridViewTextBoxColumn2.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             nameDataGridViewTextBoxColumn2.DataPropertyName = "Name";
-            nameDataGridViewTextBoxColumn2.HeaderText = "Product Name";
+            nameDataGridViewTextBoxColumn2.HeaderText = "Name";
             nameDataGridViewTextBoxColumn2.MinimumWidth = 8;
             nameDataGridViewTextBoxColumn2.Name = "nameDataGridViewTextBoxColumn2";
+            // 
+            // categoryIdDataGridViewTextBoxColumn2
+            // 
+            categoryIdDataGridViewTextBoxColumn2.DataPropertyName = "CategoryId";
+            categoryIdDataGridViewTextBoxColumn2.HeaderText = "CategoryId";
+            categoryIdDataGridViewTextBoxColumn2.MinimumWidth = 8;
+            categoryIdDataGridViewTextBoxColumn2.Name = "categoryIdDataGridViewTextBoxColumn2";
+            categoryIdDataGridViewTextBoxColumn2.Visible = false;
+            categoryIdDataGridViewTextBoxColumn2.Width = 150;
+            // 
+            // categoryNameDataGridViewTextBoxColumn
+            // 
+            categoryNameDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            categoryNameDataGridViewTextBoxColumn.DataPropertyName = "CategoryName";
+            categoryNameDataGridViewTextBoxColumn.HeaderText = "Catalogue";
+            categoryNameDataGridViewTextBoxColumn.MinimumWidth = 8;
+            categoryNameDataGridViewTextBoxColumn.Name = "categoryNameDataGridViewTextBoxColumn";
             // 
             // quantityDataGridViewTextBoxColumn
             // 
@@ -386,20 +399,14 @@
             // createdDateDataGridViewTextBoxColumn
             // 
             createdDateDataGridViewTextBoxColumn.DataPropertyName = "CreatedDate";
-            createdDateDataGridViewTextBoxColumn.HeaderText = "CreatedDate";
+            createdDateDataGridViewTextBoxColumn.HeaderText = "Added Date";
             createdDateDataGridViewTextBoxColumn.MinimumWidth = 8;
             createdDateDataGridViewTextBoxColumn.Name = "createdDateDataGridViewTextBoxColumn";
-            createdDateDataGridViewTextBoxColumn.Visible = false;
             createdDateDataGridViewTextBoxColumn.Width = 150;
             // 
-            // categoryIdDataGridViewTextBoxColumn2
+            // productTableBindingSource
             // 
-            categoryIdDataGridViewTextBoxColumn2.DataPropertyName = "CategoryId";
-            categoryIdDataGridViewTextBoxColumn2.HeaderText = "CategoryId";
-            categoryIdDataGridViewTextBoxColumn2.MinimumWidth = 8;
-            categoryIdDataGridViewTextBoxColumn2.Name = "categoryIdDataGridViewTextBoxColumn2";
-            categoryIdDataGridViewTextBoxColumn2.Visible = false;
-            categoryIdDataGridViewTextBoxColumn2.Width = 150;
+            productTableBindingSource.DataSource = typeof(Models.ProductTable);
             // 
             // productsBindingSource
             // 
@@ -433,10 +440,6 @@
             totalDataGridViewTextBoxColumn.Name = "totalDataGridViewTextBoxColumn";
             totalDataGridViewTextBoxColumn.Width = 150;
             // 
-            // categoriesBindingSource2
-            // 
-            categoriesBindingSource2.DataSource = typeof(Models.Categories);
-            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
@@ -458,6 +461,7 @@
             statusStrip1.PerformLayout();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)categoriesBindingSource2).EndInit();
             ((System.ComponentModel.ISupportInitialize)prodPrice).EndInit();
             ((System.ComponentModel.ISupportInitialize)prodQuantity).EndInit();
             groupBox2.ResumeLayout(false);
@@ -465,9 +469,9 @@
             ((System.ComponentModel.ISupportInitialize)categoriesBindingSource1).EndInit();
             groupBox3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dataGridView2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)productTableBindingSource).EndInit();
             ((System.ComponentModel.ISupportInitialize)productsBindingSource).EndInit();
             ((System.ComponentModel.ISupportInitialize)categoriesBindingSource).EndInit();
-            ((System.ComponentModel.ISupportInitialize)categoriesBindingSource2).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -483,20 +487,17 @@
         private ToolStripMenuItem aboutToolStripMenuItem;
         private StatusStrip statusStrip1;
         private ToolStripStatusLabel toolStripStatusLabel;
-        private ToolStripProgressBar toolStripProgressBar;
         private GroupBox groupBox1;
         private GroupBox groupBox2;
-        private DataGridView categoriesDataGrid;
         private Label label3;
         private Label label2;
         private TextBox prodName;
         private Label label1;
-        private Button button2;
         private Button addProductButton;
         private NumericUpDown prodQuantity;
         private Label label4;
         private NumericUpDown prodPrice;
-        private Button button3;
+        private Button resetButton;
         private ComboBox categoryComboBox;
         private GroupBox groupBox3;
         private BindingSource categoriesBindingSource;
@@ -506,16 +507,18 @@
         private DataGridView dataGridView1;
         private BindingSource categoriesBindingSource1;
         private DataGridView dataGridView2;
+        private BindingSource productsBindingSource;
+        private BindingSource categoriesBindingSource2;
         private DataGridViewTextBoxColumn categoryIdDataGridViewTextBoxColumn1;
         private DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn1;
         private DataGridViewTextBoxColumn totalDataGridViewTextBoxColumn1;
+        private BindingSource productTableBindingSource;
         private DataGridViewTextBoxColumn productIdDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn2;
+        private DataGridViewTextBoxColumn categoryIdDataGridViewTextBoxColumn2;
+        private DataGridViewTextBoxColumn categoryNameDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn quantityDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn priceDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn createdDateDataGridViewTextBoxColumn;
-        private DataGridViewTextBoxColumn categoryIdDataGridViewTextBoxColumn2;
-        private BindingSource productsBindingSource;
-        private BindingSource categoriesBindingSource2;
     }
 }

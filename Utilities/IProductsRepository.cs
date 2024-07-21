@@ -6,8 +6,7 @@ namespace InventoryApplication.Utilities
     {
         Products AddProduct(Products product);
         void DeleteProduct(int id);
-        IProducts GetProduct(int id);
         IEnumerable<IProducts> GetProducts();
-        void UpdateProduct(IProducts product);
+        void EditProduct(Products product);
     }
 }

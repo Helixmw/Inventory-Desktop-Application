@@ -27,7 +27,7 @@ namespace InventoryApplication.DataAccess
         {
             using (IDbConnection con = new SQLiteConnection(LoadConnectionString()))
             {
-                con.Execute($"insert into Products (Name,CategoryId,Price,Quantity) values (@Name, @CategoryId, @Price, @Quantity)", Value);
+                con.Execute($"insert into Products (Name,CategoryId,Price,Quantity,CreatedDate) values (@Name, @CategoryId, @Price, @Quantity, @CreatedDate)", Value);
                 return GetPreviouslyEntered();            
     
             }
@@ -39,6 +39,23 @@ namespace InventoryApplication.DataAccess
             {
                 var result = con.Query<Products>("select * from Products", new DynamicParameters());
                 return result.Last();
+            }
+        }
+
+        public void UpdateProduct(Products Value)
+        {
+            using (IDbConnection con = new SQLiteConnection(LoadConnectionString()))
+            {
+                con.Execute($"update Products set Name = @Name, CategoryId = @CategoryId, Quantity = @Quantity, Price = @Price where ProductId = {Value.ProductId}", Value);
+            }
+            
+        }
+
+        public void DeleteProduct(int id)
+        {
+            using (IDbConnection con = new SQLiteConnection(LoadConnectionString()))
+            {
+                con.Execute($"delete from Products where ProductId = {id}");
             }
         }
 
