@@ -1,4 +1,5 @@
 ﻿using InventoryApplication.DataAccess;
+using InventoryApplication.Exceptions;
 using InventoryApplication.Models;
 using System;
 using System.Collections.Generic;
@@ -23,9 +24,23 @@ namespace InventoryApplication.Utilities
             return results;
         }
 
-        public void AddProduct(IProducts product)
+        public Products AddProduct(Products product)
         {
+            try
+            {
+               return _productsAccess.Create(product);
+            }
+            catch (Exception)
+            {
+                throw new DatabaseOperationException("Unable to add to the database");
+            }
+        }
 
+        public delegate void RefreshProductsTable(Products products);
+
+        public void UpdateTable(Action<Products> RefreshTable, Products products)
+        {
+            RefreshTable(products);
         }
 
         public IProducts GetProduct(int id)
