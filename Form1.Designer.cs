@@ -33,7 +33,6 @@
             editToolStripMenuItem = new ToolStripMenuItem();
             categoriesToolStripMenuItem = new ToolStripMenuItem();
             createNewToolStripMenuItem = new ToolStripMenuItem();
-            editToolStripMenuItem1 = new ToolStripMenuItem();
             helpToolStripMenuItem = new ToolStripMenuItem();
             aboutToolStripMenuItem = new ToolStripMenuItem();
             statusStrip1 = new StatusStrip();
@@ -106,7 +105,7 @@
             // 
             // categoriesToolStripMenuItem
             // 
-            categoriesToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { createNewToolStripMenuItem, editToolStripMenuItem1 });
+            categoriesToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { createNewToolStripMenuItem });
             categoriesToolStripMenuItem.Name = "categoriesToolStripMenuItem";
             categoriesToolStripMenuItem.Size = new Size(198, 34);
             categoriesToolStripMenuItem.Text = "&Categories";
@@ -116,12 +115,7 @@
             createNewToolStripMenuItem.Name = "createNewToolStripMenuItem";
             createNewToolStripMenuItem.Size = new Size(204, 34);
             createNewToolStripMenuItem.Text = "Create &New";
-            // 
-            // editToolStripMenuItem1
-            // 
-            editToolStripMenuItem1.Name = "editToolStripMenuItem1";
-            editToolStripMenuItem1.Size = new Size(204, 34);
-            editToolStripMenuItem1.Text = "E&dit";
+            createNewToolStripMenuItem.Click += CreateCategoryOnClick;
             // 
             // helpToolStripMenuItem
             // 
@@ -291,7 +285,6 @@
             dataGridView1.RowTemplate.Height = 33;
             dataGridView1.Size = new Size(518, 225);
             dataGridView1.TabIndex = 0;
-            dataGridView1.SelectionChanged += OnSelectedCategory;
             // 
             // categoryIdDataGridViewTextBoxColumn1
             // 
@@ -483,7 +476,6 @@
         private ToolStripMenuItem categoriesToolStripMenuItem;
         private ToolStripMenuItem createNewToolStripMenuItem;
         private ToolStripMenuItem helpToolStripMenuItem;
-        private ToolStripMenuItem editToolStripMenuItem1;
         private ToolStripMenuItem aboutToolStripMenuItem;
         private StatusStrip statusStrip1;
         private ToolStripStatusLabel toolStripStatusLabel;

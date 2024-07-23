@@ -1,4 +1,5 @@
 ﻿using InventoryApplication.DataAccess;
+using InventoryApplication.Exceptions;
 using InventoryApplication.Models;
 using System;
 using System.Collections.Generic;
@@ -18,13 +19,26 @@ namespace InventoryApplication.Utilities
 
         public IEnumerable<ICategories> GetCategories()
         {
-            var result = _dbContext.LoadData();
-            return result;
+            try
+            {
+                var result = _dbContext.LoadData();
+                return result;
+            }
+            catch (Exception)
+            {
+                throw new DatabaseOperationException("Something went wrong. Unable to load Categories list");
+            }
         }
 
-        public void AddCategory(ICategories category)
+        public Categories AddCategory(string name)
         {
-
+            try {
+                 return _dbContext.Create(name);
+                }
+            catch (Exception)
+                {
+                throw new DatabaseOperationException("Something went wrong. Unable to add this Category");
+             }
         }
         public ICategories GetCategory(int id)
         {

@@ -4,8 +4,8 @@ namespace InventoryApplication.Utilities
 {
     public interface IProductsRepository
     {
-        Products AddProduct(Products product);
-        void DeleteProduct(int id);
+        Task<Products> AddProduct(Products product);
+        Task DeleteProduct(Products product);
         IEnumerable<IProducts> GetProducts();
         void EditProduct(Products product);
     }

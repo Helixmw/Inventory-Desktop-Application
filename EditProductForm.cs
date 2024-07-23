@@ -22,17 +22,23 @@ namespace InventoryApplication
         List<ICategories> _categories;
         Action<Products> _updateProductsTable;
         Action<int> _deleteProductFromTable;
+        Action _updateCategoriesTable;
+        Action _updateCategoriesControl;
         public EditProductForm(List<ICategories> categories,
             ProductTable products,
             ProductsRepository productsRepository,
             Action<Products> updateProductsTable,
-            Action<int> deleteProductFromTable)
+            Action<int> deleteProductFromTable,
+            Action updateCategoriesTable,
+            Action updateCategoriesControl)
         {
+            _product = products;
             InitializeComponent();
             _categories = categories;
-            _product = products;
             _updateProductsTable = updateProductsTable;
             _productsRepository = productsRepository;
+            _updateCategoriesTable = updateCategoriesTable;
+            _updateCategoriesControl = updateCategoriesControl;
             FillForm();
             _deleteProductFromTable = deleteProductFromTable;
         }
@@ -99,7 +105,7 @@ namespace InventoryApplication
             }
         }
 
-        private void OnDeleteProductClick(object sender, EventArgs e)
+        private async void OnDeleteProductClick(object sender, EventArgs e)
         {
             try
             {
@@ -108,8 +114,14 @@ namespace InventoryApplication
                     DialogResult result = ResultMessages.ShowQuestion($"Are you sure you want to delete?\n'{_product.Name}'", "Delete Product");
                     if (result is DialogResult.Yes)
                     {
-                        _productsRepository.DeleteProduct(_product.ProductId);
+                        await _productsRepository.DeleteProduct(new Products()
+                        {
+                            ProductId = _product.ProductId,
+                            CategoryId = _product.CategoryId
+                        });
                         _deleteProductFromTable(_product.ProductId);
+                        _updateCategoriesControl();
+                        _updateCategoriesTable();
                         this.Close();
                     }
                 }

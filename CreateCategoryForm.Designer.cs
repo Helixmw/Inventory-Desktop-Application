@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             label1 = new Label();
-            textBox1 = new TextBox();
+            categoryName = new TextBox();
             button1 = new Button();
             SuspendLayout();
             // 
@@ -42,12 +42,12 @@
             label1.TabIndex = 0;
             label1.Text = "Enter New Category";
             // 
-            // textBox1
+            // categoryName
             // 
-            textBox1.Location = new Point(24, 63);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(428, 31);
-            textBox1.TabIndex = 1;
+            categoryName.Location = new Point(24, 63);
+            categoryName.Name = "categoryName";
+            categoryName.Size = new Size(428, 31);
+            categoryName.TabIndex = 1;
             // 
             // button1
             // 
@@ -57,6 +57,7 @@
             button1.TabIndex = 2;
             button1.Text = "&Create";
             button1.UseVisualStyleBackColor = true;
+            button1.Click += CreateNewCategory;
             // 
             // CreateCategoryForm
             // 
@@ -64,7 +65,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(481, 198);
             Controls.Add(button1);
-            Controls.Add(textBox1);
+            Controls.Add(categoryName);
             Controls.Add(label1);
             MaximumSize = new Size(503, 254);
             MinimumSize = new Size(503, 254);
@@ -78,7 +79,7 @@
         #endregion
 
         private Label label1;
-        private TextBox textBox1;
+        private TextBox categoryName;
         private Button button1;
     }
 }
