@@ -1,8 +1,10 @@
 using InventoryApplication.Exceptions;
 using InventoryApplication.Models;
 using InventoryApplication.Utilities;
+using InventoryApplication.Utilities.Controls;
 using InventoryApplication.Utilities.Validation;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
 using System.Data;
@@ -21,32 +23,80 @@ namespace InventoryApplication
             InitializeComponent();
             _categoriesRepository = new CategoriesRepository();
             _productsRepository = new ProductsRepository();
+            try
+            {
+                SetCategories();
+                SetProducts(_productsRepository.GetProducts());
+
+                toolStripStatusLabel.Text = string.Empty;
+                dataGridView1.AllowUserToAddRows = false;
+                dataGridView2.AllowUserToAddRows = false;
+                ButtonPresets();
+            }
+            catch (DatabaseOperationException ex)
+            {
+                ResultMessages.ShowError(ex.Message);
+            }
+
+        }
+
+        private void ButtonPresets()
+        {
+            addProductButton.Enabled = false;
+            CheckCategoriesDropdown();
+        }
+
+        private void CheckCategoriesDropdown()
+        {
+            if (_categories.Count is 0)
+            {
+                categoryComboBox.Enabled = false;
+                addProductButton.Enabled = false;
+               
+            }
+            else
+            {
+                categoryComboBox.Enabled = true;
+                addProductButton.Enabled = true;
+               
+            }
+        }
+
+        private void SetCategories()
+        {
+            //if(_categories.Count is 0)
+            //    _categories.Clear();
+
             var categories = _categoriesRepository.GetCategories();
             foreach (var category in categories)
             {
                 _categories.Add(category);
             }
-            SetCategories(_categories);
-            SetProducts(_productsRepository.GetProducts());
-            toolStripStatusLabel.Text = string.Empty;
 
-        }
-
-        private void SetCategories(IEnumerable<ICategories> categories)
-        {
             dataGridView1.AutoGenerateColumns = false;
+            
+
+
+
             var bindingSource = new BindingSource();
 
-            foreach (ICategories category in categories)
+            foreach (ICategories category in _categories.OrderByDescending(x => x.CategoryId))
             {
                 bindingSource.Add(category);
 
             }
             dataGridView1.DataSource = bindingSource;
             categoryComboBox.DataSource = bindingSource;
+            categoryComboBox.DisplayMember = "Name";
+            categoryComboBox.ValueMember = "CategoryId";
 
+        }
 
-
+        public void ClearCategoriesAndComboBox()
+        {
+            _categories.Clear();
+            dataGridView1.DataSource = null;
+            categoryComboBox.DataSource = null;
         }
 
         private void SetProducts(IEnumerable<IProducts> products)
@@ -78,10 +128,7 @@ namespace InventoryApplication
             dataGridView2.DataSource = bindingSource;
         }
 
-        private void OnSelectedCategory(object sender, EventArgs e)
-        {
-
-        }
+      
 
         private void OnProductSelected(object sender, EventArgs e)
         {
@@ -93,12 +140,14 @@ namespace InventoryApplication
                 EditProductForm form = new EditProductForm(_categories,
                     dataTableRow, _productsRepository,
                     RefreshProductsTableOnEdit,
-                    RefreshProductsTableOnDelete);
+                    RefreshProductsTableOnDelete,
+                    SetCategories,
+                    ClearCategoriesAndComboBox);
                 form.Show();
             }
         }
 
-        private void AddProduct(object sender, EventArgs e)
+        private async void AddProduct(object sender, EventArgs e)
         {
             try
             {
@@ -106,7 +155,6 @@ namespace InventoryApplication
                 {
                     try
                     {
-
                         var item = (Categories)categoryComboBox.SelectedItem;
                         var product = new Products()
                         {
@@ -117,7 +165,11 @@ namespace InventoryApplication
                             CreatedDate = DateTime.Now.ToShortDateString() // Revert DateTime.TryParse(string);
                         };
                         ProductValidation.ValidateInput(product);
-                        var new_product = _productsRepository.AddProduct(product);
+
+                        var new_product = await _productsRepository.AddProduct(product);
+
+                        EditTable.RefreshCategoriesTableOnProductsChange(new_product, _categories, dataGridView1, categoryComboBox, addProductButton);
+
                         prodName.Text = string.Empty;
                         prodQuantity.Value = 1;
                         prodPrice.Value = 0;
@@ -144,83 +196,28 @@ namespace InventoryApplication
         public async void RefreshProductsTable(Products new_product)
         {
             toolStripStatusLabel.Text = "Adding Product...";
-            //Insert new Item
             _products.Add(new_product);
-            //Recreate table
-            var newBindingSource = new BindingSource();
-            foreach (var _product in _products.OrderByDescending(x => x.ProductId))
-            {
-                var new_prod = new ProductTable()
-                {
-                    ProductId = _product.ProductId,
-                    Name = _product.Name,
-                    CategoryId = _product.CategoryId,
-                    CategoryName = _categories.Where(x => x.CategoryId == _product.CategoryId).First().Name,
-                    Quantity = _product.Quantity,
-                    Price = _product.Price,
-                    CreatedDate = DateTime.Parse(_product.CreatedDate).ToShortDateString(),
-                };
-                newBindingSource.Add(new_prod);
-            }
-            dataGridView2.DataSource = null;
-            dataGridView2.DataSource = newBindingSource;
+            EditTable.RefreshProductsTable(_products, _categories, dataGridView2);
+            //SetCategories();
             await StatusMessage("Product Added");
-
         }
 
         public async void RefreshProductsTableOnEdit(Products products)
         {
-            var index = _products.FindIndex(x => x.ProductId == products.ProductId);
-            _products[index].Name = products.Name;
-            _products[index].CategoryId = products.CategoryId;
-            _products[index].Quantity = products.Quantity;
-            _products[index].Price = products.Price;
-
-            var newBindingSource = new BindingSource();
-            foreach (var _product in _products.OrderByDescending(x => x.ProductId))
-            {
-                var new_prod = new ProductTable()
-                {
-                    ProductId = _product.ProductId,
-                    Name = _product.Name,
-                    CategoryId = _product.CategoryId,
-                    CategoryName = _categories.Where(x => x.CategoryId == _product.CategoryId).First().Name,
-                    Quantity = _product.Quantity,
-                    Price = _product.Price,
-                    CreatedDate = DateTime.Parse(_product.CreatedDate).ToShortDateString(),
-                };
-                newBindingSource.Add(new_prod);
-            }
-            dataGridView2.DataSource = null;
-            dataGridView2.DataSource = newBindingSource;
+            EditTable.EditProductsRow(_products, products);
+            EditTable.RefreshProductsTable(_products, _categories, dataGridView2);
             await StatusMessage("Product Updated");
         }
 
 
         public async void RefreshProductsTableOnDelete(int ProductId)
         {
-            toolStripStatusLabel.Text = "Adding Product...";
-            //Insert new Item
+            toolStripStatusLabel.Text = "Deleting Product...";
             var deleted_product = _products.Where(x => x.ProductId == ProductId).First();
             _products.Remove(deleted_product);
-            //Recreate table
-            var newBindingSource = new BindingSource();
-            foreach (var _product in _products.OrderByDescending(x => x.ProductId))
-            {
-                var new_prod = new ProductTable()
-                {
-                    ProductId = _product.ProductId,
-                    Name = _product.Name,
-                    CategoryId = _product.CategoryId,
-                    CategoryName = _categories.Where(x => x.CategoryId == _product.CategoryId).First().Name,
-                    Quantity = _product.Quantity,
-                    Price = _product.Price,
-                    CreatedDate = DateTime.Parse(_product.CreatedDate).ToShortDateString(),
-                };
-                newBindingSource.Add(new_prod);
-            }
-            dataGridView2.DataSource = null;
-            dataGridView2.DataSource = newBindingSource;
+                  
+
+            EditTable.RefreshProductsTable(_products, _categories, dataGridView2);
             await StatusMessage("Product Deleted");
 
         }
@@ -235,12 +232,18 @@ namespace InventoryApplication
         private void OnNameKeyUp(object sender, KeyEventArgs e)
         {
             if (prodName.Text != string.Empty)
+            {
                 resetButton.Enabled = true;
+                addProductButton.Enabled = true;
+            }
 
             else
+            {
                 resetButton.Enabled = false;
+                addProductButton.Enabled = false;
+            }
 
-
+            CheckCategoriesDropdown();
         }
 
         private void OnResetClick(object sender, EventArgs e)
@@ -249,6 +252,19 @@ namespace InventoryApplication
             prodQuantity.Value = 1;
             prodPrice.Value = 0;
             resetButton.Enabled = false;
+        }
+
+        private void CreateCategoryOnClick(object sender, EventArgs e)
+        {
+            CreateCategoryForm createCategoryForm = new CreateCategoryForm(_categoriesRepository, AddToCategoriesTable);
+            createCategoryForm.Show();
+        }
+
+        public async void AddToCategoriesTable(Categories categories)
+        {
+            _categories.Add(categories);
+            EditTable.RefreshCategoriesTable(_categories, dataGridView1, categoryComboBox, addProductButton);
+            await StatusMessage("New Category Added");
         }
     }
 }

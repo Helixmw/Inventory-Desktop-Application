@@ -20,15 +20,22 @@ namespace InventoryApplication.Utilities
 
         public IEnumerable<IProducts> GetProducts()
         {
+            try {
             var results = _productsAccess.LoadData();
             return results;
+            }
+            catch (Exception)
+            {
+                throw new DatabaseOperationException("Something went wrong. Unable to load Products list");
+            }
         }
 
-        public Products AddProduct(Products product)
+        public async Task<Products> AddProduct(Products product)
         {
             try
             {
-               return _productsAccess.Create(product);
+                var new_product = await _productsAccess.Create(product);
+                return new_product;
             }
             catch (Exception)
             {
@@ -41,11 +48,11 @@ namespace InventoryApplication.Utilities
             try
             {
 
-            _productsAccess.UpdateProduct(product);
+             _productsAccess.UpdateProduct(product);
             }
             catch (Exception)
             {
-                throw new DatabaseOperationException("Something went wrong. Unable to update this product");
+                throw new DatabaseOperationException("Something went wrong. Unable to update this Product");
             }
         }
 
@@ -58,11 +65,11 @@ namespace InventoryApplication.Utilities
 
 
 
-        public void DeleteProduct(int id)
+        public async Task DeleteProduct(Products product)
         {
             try
             {
-                _productsAccess.DeleteProduct(id);
+                await _productsAccess.DeleteProduct(product);
             }
             catch (Exception)
             {

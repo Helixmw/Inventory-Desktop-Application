@@ -4,7 +4,7 @@ namespace InventoryApplication.Utilities
 {
     public interface ICategoriesRepository
     {
-        void AddCategory(ICategories category);
+        Categories AddCategory(string name);
         void DeleteCategory(ICategories category);
         IEnumerable<ICategories> GetCategories();
         ICategories GetCategory(int id);

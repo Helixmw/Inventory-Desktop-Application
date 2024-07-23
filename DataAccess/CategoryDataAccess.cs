@@ -22,11 +22,13 @@ namespace InventoryApplication.DataAccess
             }
         }
 
-        public void Create(Categories Value)
+        public Categories Create(string Value)
         {
             using (IDbConnection con = new SQLiteConnection(LoadConnectionString()))
             {
-                 con.Execute($"insert into Categories (Name,Total) values (@Name, @Total)", Value);          
+                 con.Execute($"insert into Categories (Name) values (@Name)", new Categories() { Name = Value });
+                var result = con.Query<Categories>("select * from Categories", new DynamicParameters());
+                return result.Last();
 
             }
         }
