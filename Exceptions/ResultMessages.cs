@@ -25,7 +25,7 @@ namespace InventoryApplication.Exceptions
             MessageBox.Show(message, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        public static void ShowInputError(string caption, string message)
+        public static void ShowInputError(string message, string? caption = "Invalid Entry")
         {
             MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }

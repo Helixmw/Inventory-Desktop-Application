@@ -32,7 +32,6 @@
             menuStrip1 = new MenuStrip();
             editToolStripMenuItem = new ToolStripMenuItem();
             categoriesToolStripMenuItem = new ToolStripMenuItem();
-            createNewToolStripMenuItem = new ToolStripMenuItem();
             helpToolStripMenuItem = new ToolStripMenuItem();
             aboutToolStripMenuItem = new ToolStripMenuItem();
             statusStrip1 = new StatusStrip();
@@ -105,17 +104,10 @@
             // 
             // categoriesToolStripMenuItem
             // 
-            categoriesToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { createNewToolStripMenuItem });
             categoriesToolStripMenuItem.Name = "categoriesToolStripMenuItem";
-            categoriesToolStripMenuItem.Size = new Size(198, 34);
+            categoriesToolStripMenuItem.Size = new Size(270, 34);
             categoriesToolStripMenuItem.Text = "&Categories";
-            // 
-            // createNewToolStripMenuItem
-            // 
-            createNewToolStripMenuItem.Name = "createNewToolStripMenuItem";
-            createNewToolStripMenuItem.Size = new Size(204, 34);
-            createNewToolStripMenuItem.Text = "Create &New";
-            createNewToolStripMenuItem.Click += CreateCategoryOnClick;
+            categoriesToolStripMenuItem.Click += CreateCategoryOnClick;
             // 
             // helpToolStripMenuItem
             // 
@@ -203,7 +195,7 @@
             // prodPrice
             // 
             prodPrice.Location = new Point(103, 186);
-            prodPrice.Maximum = new decimal(new int[] { 100000000, 0, 0, 0 });
+            prodPrice.Maximum = new decimal(new int[] { 10000000, 0, 0, 0 });
             prodPrice.Name = "prodPrice";
             prodPrice.Size = new Size(180, 31);
             prodPrice.TabIndex = 4;
@@ -474,7 +466,6 @@
         private MenuStrip menuStrip1;
         private ToolStripMenuItem editToolStripMenuItem;
         private ToolStripMenuItem categoriesToolStripMenuItem;
-        private ToolStripMenuItem createNewToolStripMenuItem;
         private ToolStripMenuItem helpToolStripMenuItem;
         private ToolStripMenuItem aboutToolStripMenuItem;
         private StatusStrip statusStrip1;

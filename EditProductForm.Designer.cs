@@ -126,6 +126,7 @@
             // editPrice
             // 
             editPrice.Location = new Point(216, 244);
+            editPrice.Maximum = new decimal(new int[] { 10000000, 0, 0, 0 });
             editPrice.Name = "editPrice";
             editPrice.Size = new Size(180, 31);
             editPrice.TabIndex = 4;
