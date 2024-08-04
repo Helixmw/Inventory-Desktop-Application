@@ -52,13 +52,13 @@ namespace InventoryApplication
             {
                 categoryComboBox.Enabled = false;
                 addProductButton.Enabled = false;
-               
+
             }
             else
             {
                 categoryComboBox.Enabled = true;
                 addProductButton.Enabled = true;
-               
+
             }
         }
 
@@ -74,7 +74,7 @@ namespace InventoryApplication
             }
 
             dataGridView1.AutoGenerateColumns = false;
-            
+
 
 
 
@@ -128,7 +128,7 @@ namespace InventoryApplication
             dataGridView2.DataSource = bindingSource;
         }
 
-      
+
 
         private void OnProductSelected(object sender, EventArgs e)
         {
@@ -217,7 +217,7 @@ namespace InventoryApplication
             toolStripStatusLabel.Text = "Deleting Product...";
             var deleted_product = _products.Where(x => x.ProductId == ProductId).First();
             _products.Remove(deleted_product);
-                  
+
 
             EditTable.RefreshProductsTable(_products, _categories, dataGridView2);
             await StatusMessage("Product Deleted");
@@ -258,7 +258,9 @@ namespace InventoryApplication
 
         private void CreateCategoryOnClick(object sender, EventArgs e)
         {
-            CreateCategoryForm createCategoryForm = new CreateCategoryForm(_categoriesRepository, AddToCategoriesTable);
+            CreateCategoryForm createCategoryForm = new CreateCategoryForm(_categoriesRepository,
+                AddToCategoriesTable, _categories,
+                SetCategoryNameFromEdit);
             createCategoryForm.Show();
         }
 
@@ -267,6 +269,37 @@ namespace InventoryApplication
             _categories.Add(categories);
             EditTable.RefreshCategoriesTable(_categories, dataGridView1, categoryComboBox, addProductButton);
             await StatusMessage("New Category Added");
+        }
+
+        public void SetCategoryNameFromEdit(Categories category)
+        {
+            var categoryBindingSource = new BindingSource();
+            _categories.Clear();
+
+            var categories = _categoriesRepository.GetCategories();
+
+            foreach (var _category in categories)
+            {
+                _categories.Add(_category);
+                categoryBindingSource.Add(_category);
+            }
+
+            dataGridView1.AutoGenerateColumns = false;
+
+            dataGridView1.DataSource = categoryComboBox.DataSource = null;
+            dataGridView1.DataSource = categoryComboBox.DataSource = categoryBindingSource;
+            categoryComboBox.DisplayMember = "Name";
+            categoryComboBox.ValueMember = "CategoryId";
+
+            ResetProductsTableOnCategoryEdit();
+
+        }
+
+        private void ResetProductsTableOnCategoryEdit()
+        {
+            _products.Clear();
+            dataGridView2.DataSource = null;
+            SetProducts(_productsRepository.GetProducts());
         }
     }
 }

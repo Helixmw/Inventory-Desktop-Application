@@ -47,7 +47,16 @@ namespace InventoryApplication.Utilities
 
         public void UpdateCategory(ICategories category)
         {
-
+            try
+            {
+                var result = _dbContext.Update((Categories)category);
+                if(result is false)
+                    throw new DatabaseOperationException("Something went wrong. Unable to add this Category");
+            }
+            catch (Exception)
+            {
+                throw new DatabaseOperationException("Something went wrong. Unable to add this Category");
+            }
         }
         public void DeleteCategory(ICategories category)
         {

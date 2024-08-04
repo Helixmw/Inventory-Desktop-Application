@@ -33,6 +33,14 @@ namespace InventoryApplication.DataAccess
             }
         }
 
+        public Boolean Update(Categories categories)
+        {
+            using (IDbConnection con = new SQLiteConnection(LoadConnectionString()))
+            {
+                return con.Execute($"update categories set Name = '{categories.Name}' where CategoryId = {categories.CategoryId}") > 0;
+            }
+        }
+
         public string LoadConnectionString(string id = "InventoryApplication.Properties.Settings.DefaultConnectionString")
         {
             return ConfigurationManager.ConnectionStrings[id].ConnectionString;

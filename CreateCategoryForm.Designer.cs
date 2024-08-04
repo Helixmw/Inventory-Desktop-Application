@@ -30,12 +30,12 @@
         {
             components = new System.ComponentModel.Container();
             categoryName = new TextBox();
-            button1 = new Button();
-            button2 = new Button();
-            button3 = new Button();
+            createButton = new Button();
+            editButton = new Button();
+            deleteButton = new Button();
             groupBox1 = new GroupBox();
             groupBox2 = new GroupBox();
-            listBox1 = new ListBox();
+            categoryListBox = new ListBox();
             categoriesBindingSource = new BindingSource(components);
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
@@ -48,43 +48,46 @@
             categoryName.Name = "categoryName";
             categoryName.Size = new Size(355, 31);
             categoryName.TabIndex = 1;
+            categoryName.KeyUp += CheckValueExists;
             // 
-            // button1
+            // createButton
             // 
-            button1.Location = new Point(24, 82);
-            button1.Name = "button1";
-            button1.Size = new Size(112, 34);
-            button1.TabIndex = 2;
-            button1.Text = "&Create";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += CreateNewCategory;
+            createButton.Location = new Point(24, 82);
+            createButton.Name = "createButton";
+            createButton.Size = new Size(112, 34);
+            createButton.TabIndex = 2;
+            createButton.Text = "&Create";
+            createButton.UseVisualStyleBackColor = true;
+            createButton.Click += CreateNewCategory;
             // 
-            // button2
+            // editButton
             // 
-            button2.Enabled = false;
-            button2.Location = new Point(147, 82);
-            button2.Name = "button2";
-            button2.Size = new Size(112, 34);
-            button2.TabIndex = 3;
-            button2.Text = "&Save";
-            button2.UseVisualStyleBackColor = true;
+            editButton.Enabled = false;
+            editButton.Location = new Point(147, 82);
+            editButton.Name = "editButton";
+            editButton.Size = new Size(112, 34);
+            editButton.TabIndex = 3;
+            editButton.Text = "&Edit";
+            editButton.UseVisualStyleBackColor = true;
+            editButton.Click += EditButtonClick;
             // 
-            // button3
+            // deleteButton
             // 
-            button3.Enabled = false;
-            button3.Location = new Point(267, 82);
-            button3.Name = "button3";
-            button3.Size = new Size(112, 34);
-            button3.TabIndex = 4;
-            button3.Text = "&Delete";
-            button3.UseVisualStyleBackColor = true;
+            deleteButton.Enabled = false;
+            deleteButton.Location = new Point(267, 82);
+            deleteButton.Name = "deleteButton";
+            deleteButton.Size = new Size(112, 34);
+            deleteButton.TabIndex = 4;
+            deleteButton.Text = "&Delete";
+            deleteButton.UseVisualStyleBackColor = true;
+            deleteButton.Click += DeleteButtonClick;
             // 
             // groupBox1
             // 
             groupBox1.Controls.Add(categoryName);
-            groupBox1.Controls.Add(button3);
-            groupBox1.Controls.Add(button1);
-            groupBox1.Controls.Add(button2);
+            groupBox1.Controls.Add(deleteButton);
+            groupBox1.Controls.Add(createButton);
+            groupBox1.Controls.Add(editButton);
             groupBox1.Location = new Point(38, 37);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(415, 178);
@@ -94,7 +97,7 @@
             // 
             // groupBox2
             // 
-            groupBox2.Controls.Add(listBox1);
+            groupBox2.Controls.Add(categoryListBox);
             groupBox2.Location = new Point(477, 37);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(445, 460);
@@ -102,17 +105,18 @@
             groupBox2.TabStop = false;
             groupBox2.Text = "Categories List";
             // 
-            // listBox1
+            // categoryListBox
             // 
-            listBox1.DataSource = categoriesBindingSource;
-            listBox1.DisplayMember = "Name";
-            listBox1.FormattingEnabled = true;
-            listBox1.ItemHeight = 25;
-            listBox1.Location = new Point(27, 47);
-            listBox1.Name = "listBox1";
-            listBox1.Size = new Size(392, 379);
-            listBox1.TabIndex = 0;
-            listBox1.ValueMember = "CategoryId";
+            categoryListBox.DataSource = categoriesBindingSource;
+            categoryListBox.DisplayMember = "Name";
+            categoryListBox.FormattingEnabled = true;
+            categoryListBox.ItemHeight = 25;
+            categoryListBox.Location = new Point(27, 47);
+            categoryListBox.Name = "categoryListBox";
+            categoryListBox.Size = new Size(392, 379);
+            categoryListBox.TabIndex = 5;
+            categoryListBox.ValueMember = "CategoryId";
+            categoryListBox.Click += OnCategorySelected;
             // 
             // categoriesBindingSource
             // 
@@ -139,12 +143,12 @@
 
         #endregion
         private TextBox categoryName;
-        private Button button1;
-        private Button button2;
-        private Button button3;
+        private Button createButton;
+        private Button editButton;
+        private Button deleteButton;
         private GroupBox groupBox1;
         private GroupBox groupBox2;
-        private ListBox listBox1;
+        private ListBox categoryListBox;
         private BindingSource categoriesBindingSource;
     }
 }
