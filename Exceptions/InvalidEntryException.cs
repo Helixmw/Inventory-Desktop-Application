@@ -8,7 +8,7 @@ namespace InventoryApplication.Exceptions
 {
     public class InvalidEntryException : Exception
     {
-        public InvalidEntryException(string message):base(message)
+        public InvalidEntryException(string message, string? caption = "Invalid Entry"):base(message)
         {
             
         }

@@ -155,6 +155,8 @@ namespace InventoryApplication
                 {
                     try
                     {
+                        QuantityPriceValidation.CheckValueLimits(prodQuantity, prodPrice);
+
                         var item = (Categories)categoryComboBox.SelectedItem;
                         var product = new Products()
                         {
@@ -178,7 +180,7 @@ namespace InventoryApplication
                     }
                     catch (InvalidEntryException ex)
                     {
-                        ResultMessages.ShowInputError("Invalid Entry", ex.Message);
+                        ResultMessages.ShowInputError(ex.Message);
                     }
 
                 }

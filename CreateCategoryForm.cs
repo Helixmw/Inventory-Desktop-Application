@@ -40,9 +40,10 @@ namespace InventoryApplication
                 }
                 catch (InvalidEntryException ex)
                 {
-                    ResultMessages.ShowInputError("Invalid Entry", ex.Message);
+                    ResultMessages.ShowInputError(ex.Message);
                 }
-            }catch(DatabaseOperationException ex)
+            }
+            catch (DatabaseOperationException ex)
             {
                 ResultMessages.ShowError(ex.Message);
             }
