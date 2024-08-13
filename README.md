@@ -1,2 +1,4 @@
 # InventoryApplication
-<img src="./Assets/Images/pic1.png" height="500" style="align:center;"/>
+<center>
+<img src="./Assets/Images/pic1.png" height="500"/>
+</center>
