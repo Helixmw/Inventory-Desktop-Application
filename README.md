@@ -4,5 +4,5 @@ This is an Inventory WinForms Application that stores records for incoming items
 The start up window presents tables of registered Categories, Products and input field to enter new items.
 <br/><br/>
 <div align=center>
-<img src="./Assets/Images/pice.png" height="500"/>
+<img src="./Assets/Images/pic3.png" height="500"/>
 </div>
