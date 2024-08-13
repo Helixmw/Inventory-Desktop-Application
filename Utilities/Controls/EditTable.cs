@@ -62,23 +62,21 @@ namespace InventoryApplication.Utilities.Controls
             foreach (var category in categories.OrderByDescending(x => x.CategoryId))
             {
                 bindingSource.Add(category);
-                ResetCategoriesDataGridAndComboBox(dataGridView1, categoryComboBox, bindingSource, addProductButton);
             }
+            ResetCategoriesDataGridAndComboBox(dataGridView1, categoryComboBox, bindingSource, addProductButton);
            
         }
 
         private static void ResetCategoriesDataGridAndComboBox(DataGridView dataGridView1, ComboBox categoryComboBox, BindingSource bindingSource, Button addProductButton)
         {
-            dataGridView1.DataSource = null;
-            dataGridView1.DataSource = bindingSource;
+            dataGridView1.DataSource = categoryComboBox.DataSource = null;
+            dataGridView1.DataSource = categoryComboBox.DataSource = bindingSource;
 
-            categoryComboBox.DataSource = null;
             categoryComboBox.ValueMember = "CategoryId";
             categoryComboBox.DisplayMember = "Name";
-            categoryComboBox.DataSource = bindingSource;
+      
+            categoryComboBox.Enabled = addProductButton.Enabled = true;
 
-            categoryComboBox.Enabled = true;
-            addProductButton.Enabled = true;
         }
         
        

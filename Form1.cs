@@ -26,11 +26,8 @@ namespace InventoryApplication
             try
             {
                 SetCategories();
-                SetProducts(_productsRepository.GetProducts());
-
-                toolStripStatusLabel.Text = string.Empty;
-                dataGridView1.AllowUserToAddRows = false;
-                dataGridView2.AllowUserToAddRows = false;
+                GetAndSetProducts();
+                ControlsConfig.ConfigureDataGridsAndToolStrip(dataGridView1, dataGridView2, toolStripStatusLabel);
                 ButtonPresets();
             }
             catch (DatabaseOperationException ex)
@@ -52,44 +49,31 @@ namespace InventoryApplication
             {
                 categoryComboBox.Enabled = false;
                 addProductButton.Enabled = false;
-
             }
             else
             {
                 categoryComboBox.Enabled = true;
                 addProductButton.Enabled = true;
-
             }
         }
 
         private void SetCategories()
         {
-            //if(_categories.Count is 0)
-            //    _categories.Clear();
-
             var categories = _categoriesRepository.GetCategories();
             foreach (var category in categories)
             {
                 _categories.Add(category);
             }
-
             dataGridView1.AutoGenerateColumns = false;
-
-
-
-
             var bindingSource = new BindingSource();
-
             foreach (ICategories category in _categories.OrderByDescending(x => x.CategoryId))
             {
                 bindingSource.Add(category);
-
             }
             dataGridView1.DataSource = bindingSource;
             categoryComboBox.DataSource = bindingSource;
             categoryComboBox.DisplayMember = "Name";
             categoryComboBox.ValueMember = "CategoryId";
-
         }
 
         public void ClearCategoriesAndComboBox()
@@ -99,17 +83,24 @@ namespace InventoryApplication
             categoryComboBox.DataSource = null;
         }
 
+        private void GetAndSetProducts()
+        {
+            var products = _productsRepository.GetProducts();
+            SetProducts(products);
+        }
+
         private void SetProducts(IEnumerable<IProducts> products)
         {
             dataGridView2.AutoGenerateColumns = false;
             var bindingSource = new BindingSource();
-
+            _products.Clear();
             _products = (List<Products>)products;
 
             foreach (Products _product in _products)
             {
                 var new_date = DateTime.Parse(_product.CreatedDate);
-                _product.CreatedDate = new_date.ToShortDateString();
+                _product.CreatedDate = new_date.ToShortDateString();               
+                var categoryName = _categories.Where(x => x.CategoryId == _product.CategoryId).First();
 
                 var productTable = new ProductTable()
                 {
@@ -118,7 +109,7 @@ namespace InventoryApplication
                     Quantity = _product.Quantity,
                     Price = _product.Price,
                     CategoryId = _product.CategoryId,
-                    CategoryName = _categories.Where(x => x.CategoryId == _product.CategoryId).First().Name,
+                   CategoryName = categoryName.Name,
                     CreatedDate = _product.CreatedDate,
                 };
 
@@ -172,17 +163,14 @@ namespace InventoryApplication
 
                         EditTable.RefreshCategoriesTableOnProductsChange(new_product, _categories, dataGridView1, categoryComboBox, addProductButton);
 
-                        prodName.Text = string.Empty;
-                        prodQuantity.Value = 1;
-                        prodPrice.Value = 0;
-                        resetButton.Enabled = false;
+                        ControlsConfig.ResetTextFieldsAndResetButton(prodName,prodQuantity, prodPrice,resetButton);
+                        
                         _productsRepository.UpdateTable(RefreshProductsTable, new_product);
                     }
                     catch (InvalidEntryException ex)
                     {
                         ResultMessages.ShowInputError(ex.Message);
                     }
-
                 }
                 catch (DatabaseOperationException ex)
                 {
@@ -204,8 +192,9 @@ namespace InventoryApplication
             await StatusMessage("Product Added");
         }
 
-        public async void RefreshProductsTableOnEdit(Products products)
+        public async void RefreshProductsTableOnEdit(Products products, List<Categories> new_categories)
         {
+            ResetCategoriesTable(new_categories);
             EditTable.EditProductsRow(_products, products);
             EditTable.RefreshProductsTable(_products, _categories, dataGridView2);
             await StatusMessage("Product Updated");
@@ -260,15 +249,38 @@ namespace InventoryApplication
         {
             CreateCategoryForm createCategoryForm = new CreateCategoryForm(_categoriesRepository,
                 AddToCategoriesTable, _categories,
-                SetCategoryNameFromEdit);
+                SetCategoryNameFromEdit,
+                ResetProductsTableOnCategoryEdit,
+                ResetCategoriesTable);
             createCategoryForm.Show();
         }
 
-        public async void AddToCategoriesTable(Categories categories)
+        public async void AddToCategoriesTable(List<Categories> categories)
         {
-            _categories.Add(categories);
-            EditTable.RefreshCategoriesTable(_categories, dataGridView1, categoryComboBox, addProductButton);
+            ResetCategories(categories);      
             await StatusMessage("New Category Added");
+        }
+
+        private void ResetCategories(List<Categories> new_categories)
+        {
+            _categories.Clear();
+
+            foreach(var category in new_categories)
+            {
+                _categories.Add(category);
+            }
+
+            dataGridView1.AutoGenerateColumns = false;
+            var bindingSource = new BindingSource();
+            foreach (ICategories category in _categories.OrderByDescending(x => x.CategoryId))
+            {
+                bindingSource.Add(category);
+            }
+            dataGridView1.DataSource = categoryComboBox.DataSource = null;
+            dataGridView1.DataSource = categoryComboBox.DataSource = bindingSource;
+            categoryComboBox.DisplayMember = "Name";
+            categoryComboBox.ValueMember = "CategoryId";
+            categoryComboBox.Enabled = addProductButton.Enabled = true;
         }
 
         public void SetCategoryNameFromEdit(Categories category)
@@ -295,11 +307,18 @@ namespace InventoryApplication
 
         }
 
+
         private void ResetProductsTableOnCategoryEdit()
         {
             _products.Clear();
             dataGridView2.DataSource = null;
-            SetProducts(_productsRepository.GetProducts());
+            GetAndSetProducts();
+            ControlsConfig.ConfigureDataGridsAndToolStrip(dataGridView1, dataGridView2, toolStripStatusLabel);
+        }
+
+        private void ResetCategoriesTable(List<Categories> categories)
+        {
+            ResetCategories(categories);
         }
     }
 }

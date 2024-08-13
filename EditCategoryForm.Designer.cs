@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditCategoryForm));
             label1 = new Label();
             categoryName = new TextBox();
             saveChangesButton = new Button();
@@ -91,6 +92,7 @@
             Controls.Add(saveChangesButton);
             Controls.Add(categoryName);
             Controls.Add(label1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximumSize = new Size(629, 245);
             MinimumSize = new Size(629, 245);
             Name = "EditCategoryForm";

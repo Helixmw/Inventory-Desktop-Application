@@ -14,12 +14,12 @@ namespace InventoryApplication
     public partial class EditCategoryForm : Form
     {
         ICategories category;
-        Action<Categories> DeleteSelectedCategory;
-        Action<Categories> ResetSelectedCategory;
+        Action<Categories, Form> DeleteSelectedCategory;
+        Action<Categories, Form> ResetSelectedCategory;
         Action<Categories,Form> SaveSelectedCategory;
         public EditCategoryForm(ICategories category,
-            Action<Categories> deleteSelectedCategory,
-            Action<Categories> resetSelectedCategory,
+            Action<Categories, Form> deleteSelectedCategory,
+            Action<Categories, Form> resetSelectedCategory,
             Action<Categories,Form> saveSelectedCategory
             )
         {
@@ -34,13 +34,13 @@ namespace InventoryApplication
         private void DeleteButtonClick(object sender, EventArgs e)
         {
             var selected_category = (Categories)category;
-            DeleteSelectedCategory(selected_category);
+            DeleteSelectedCategory(selected_category, this);
         }
 
         private void ResetProductsClick(object sender, EventArgs e)
         {
             var selected_category = (Categories)category;
-            ResetSelectedCategory(selected_category);
+            ResetSelectedCategory(selected_category, this);
         }
 
         private void SaveChangesClick(object sender, EventArgs e)

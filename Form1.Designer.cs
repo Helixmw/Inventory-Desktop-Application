@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             menuStrip1 = new MenuStrip();
             editToolStripMenuItem = new ToolStripMenuItem();
             categoriesToolStripMenuItem = new ToolStripMenuItem();
@@ -105,7 +106,7 @@
             // categoriesToolStripMenuItem
             // 
             categoriesToolStripMenuItem.Name = "categoriesToolStripMenuItem";
-            categoriesToolStripMenuItem.Size = new Size(270, 34);
+            categoriesToolStripMenuItem.Size = new Size(198, 34);
             categoriesToolStripMenuItem.Text = "&Categories";
             categoriesToolStripMenuItem.Click += CreateCategoryOnClick;
             // 
@@ -435,6 +436,7 @@
             Controls.Add(groupBox1);
             Controls.Add(statusStrip1);
             Controls.Add(menuStrip1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = menuStrip1;
             MinimumSize = new Size(1141, 923);
             Name = "Form1";

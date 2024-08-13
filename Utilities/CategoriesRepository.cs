@@ -30,7 +30,7 @@ namespace InventoryApplication.Utilities
             }
         }
 
-        public Categories AddCategory(string name)
+        public List<Categories> AddCategory(string name)
         {
             try {
                  return _dbContext.Create(name);
@@ -58,9 +58,45 @@ namespace InventoryApplication.Utilities
                 throw new DatabaseOperationException("Something went wrong. Unable to add this Category");
             }
         }
-        public void DeleteCategory(ICategories category)
-        {
 
+        public List<Categories> DeleteCategoryProducts(Categories category)
+        {
+            try
+            {
+                var result = _dbContext.DeleteProductsUnderCategory(category);
+                return result;
+             
+            }
+            catch (Exception)
+            {
+                throw new DatabaseOperationException("Something went wrong. Unable to reset category products");
+            }
+
+        }
+        public List<Categories> DeleteCategory(Categories category)
+        {
+            try
+            {
+                var result = _dbContext.Delete(category);
+                return result;
+            }
+            catch (Exception)
+            {
+                throw new DatabaseOperationException("Something went wrong. Unable to delete this category");
+            }
+        }
+
+        public List<Categories> DeleteCategoryData(Categories category)
+        {
+            try
+            {
+                var result = _dbContext.DeleteAllCategoryData(category);
+                return result;
+            }
+            catch (Exception)
+            {
+                throw new DatabaseOperationException("Something went wrong. Unable to delete this category");
+            }
         }
     }
 }

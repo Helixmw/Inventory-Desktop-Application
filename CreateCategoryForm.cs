@@ -21,11 +21,15 @@ namespace InventoryApplication
         AddToCategoriesTable _addToCategoriesTable;
         List<ICategories> categoriesList;
         Action<Categories> _setCategoryNameFromEdit;
+        Action _resetProductsTableOnCategoryEdit;
+        Action<List<Categories>> _resetCategoriesTable;
         int selectedCategoryId;
         public CreateCategoryForm(CategoriesRepository categoriesRepository,
             AddToCategoriesTable addToCategoriesTable,
             List<ICategories> categoriesList,
-            Action<Categories> setCategoryNameFromEdit
+            Action<Categories> setCategoryNameFromEdit,
+            Action resetProductsTableOnCategoryEdit,
+            Action<List<Categories>> resetCategoriesTable
             )
         {
             InitializeComponent();
@@ -33,10 +37,12 @@ namespace InventoryApplication
             _addToCategoriesTable = addToCategoriesTable;
             this.categoriesList = categoriesList;
             this._setCategoryNameFromEdit = setCategoryNameFromEdit;
+            this._resetProductsTableOnCategoryEdit = resetProductsTableOnCategoryEdit;
+            this._resetCategoriesTable = resetCategoriesTable;
             SetCategoriesInListBox();
         }
 
-        public delegate void AddToCategoriesTable(Categories categories);
+        public delegate void AddToCategoriesTable(List<Categories> categories);
 
         private void SetCategoriesInListBox()
         {
@@ -51,13 +57,23 @@ namespace InventoryApplication
 
         }
 
-        private void ResetListBox(Categories category)
+        private void ResetListBox(List<Categories> categories)
         {
-            categoriesList.Insert(0, category);
+            categoriesList.Clear();
+            foreach(var category in categories)
+            {
+                categoriesList.Add(category);
+            }
             categoryListBox.DataSource = null;
-            SetCategoriesInListBox();
+            var bindingSource = new BindingSource();
+            foreach(var category in categoriesList)
+            {
+                bindingSource.Insert(0, category);
+            }
+            categoryListBox.DataSource = bindingSource;
             categoryListBox.DisplayMember = "Name";
-            categoryListBox.ValueMember = "CategoryId";
+            categoryListBox.ValueMember = "CategoryId";         
+
         }
 
         private void CreateNewCategory(object sender, EventArgs e)
@@ -67,10 +83,11 @@ namespace InventoryApplication
                 try
                 {
                     CategoryValidation.ValidateInput(categoryName.Text);
+                    CategoryValidation.CategoryExists(categoryName.Text, categoriesList);
 
-                    var category = _categoriesRepository.AddCategory(categoryName.Text);
-                    _addToCategoriesTable(category);
-                    ResetListBox(category);
+                    var categories = _categoriesRepository.AddCategory(categoryName.Text);
+                    _addToCategoriesTable(categories);
+                    ResetListBox(categories);
                     //this.Close();
                 }
                 catch (InvalidEntryException ex)
@@ -119,16 +136,53 @@ namespace InventoryApplication
 
         }
 
-        public void DeleteCategory(ICategories category)
+        public void DeleteCategory(ICategories category, Form? editForm = null)
         {
             var result =  Prompts.QuestionPrompt($"Are you sure you want to delete {category.Name}?\n" +
                                         $"Deleting {category.Name} results in erasing all product records.", "Delete Category");
+            if (result == DialogResult.Yes)
+            {
+                var new_categories = _categoriesRepository.DeleteCategoryData((Categories)category);
+                _resetCategoriesTable(new_categories);
+                _resetProductsTableOnCategoryEdit();
+                ResetCategoriesAndListBox(new_categories);
+                SetCategoriesInListBox();
+                categoryListBox.DisplayMember = "Name";
+
+                if (editForm is not null)
+                editForm.Close();
+
+                ResultMessages.ShowSuccess($"You have deleted all Products and the category {category.Name}");
+
+            }
         }
 
-        public void ResetCategory(Categories category)
+        private void ResetCategoriesAndListBox(List<Categories> new_categories)
+        {
+            categoriesList.Clear();
+            foreach (var category in new_categories)
+            {
+                categoriesList.Add(category);
+            }
+            categoryListBox.DataSource = null;
+        }
+
+
+
+
+        public void ResetCategory(Categories category, Form editForm)
         {
             var result = Prompts.QuestionPrompt($"Are you sure you want to reset {category.Name} Products?\n" +
                                         $"Resetting {category.Name} Products deletes all the products under this category.", "Reset Category Products");
+            if(result == DialogResult.Yes)
+            {
+                var new_categories = _categoriesRepository.DeleteCategoryProducts(category);
+                _resetProductsTableOnCategoryEdit();
+                _resetCategoriesTable(new_categories);
+                editForm.Close();
+                ResultMessages.ShowSuccess($"You have reset all Products under {category.Name}");
+            }
+
         }
 
         public void SaveCategory(Categories category, Form editForm)
