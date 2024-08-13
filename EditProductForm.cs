@@ -20,14 +20,14 @@ namespace InventoryApplication
         ProductsRepository _productsRepository;
         ProductTable _product;
         List<ICategories> _categories;
-        Action<Products> _updateProductsTable;
+        Action<Products, List<Categories>> _updateProductsTable;
         Action<int> _deleteProductFromTable;
         Action _updateCategoriesTable;
         Action _updateCategoriesControl;
         public EditProductForm(List<ICategories> categories,
             ProductTable products,
             ProductsRepository productsRepository,
-            Action<Products> updateProductsTable,
+            Action<Products, List<Categories>> updateProductsTable,
             Action<int> deleteProductFromTable,
             Action updateCategoriesTable,
             Action updateCategoriesControl)
@@ -60,7 +60,7 @@ namespace InventoryApplication
             editQuantity.Value = _product.Quantity;
         }
 
-        private void OnClickSaveChanges(object sender, EventArgs e)
+        private async void OnClickSaveChanges(object sender, EventArgs e)
         {
             try
             {
@@ -82,9 +82,9 @@ namespace InventoryApplication
                                 Price = (int)editPrice.Value,
                             };
                             ProductValidation.ValidateInput(product);
-                            _productsRepository.EditProduct(product);
+                            var new_categories = await _productsRepository.EditProduct(product);
                             //ResultMessages.ShowSuccess($"Successfully made changes to:\n'{product.Name}'");
-                            _updateProductsTable(product);
+                            _updateProductsTable(product, new_categories);
                             this.Close();
                         }
 

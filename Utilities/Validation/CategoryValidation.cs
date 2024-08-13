@@ -15,5 +15,12 @@ namespace InventoryApplication.Utilities.Validation
             if (name == String.Empty)
                 throw new InvalidEntryException("Please fill in all the fields");
         }
+
+        public static void CategoryExists(string name, List<ICategories> categories)
+        {
+            var category = categories.Where(x => x.Name.ToLower() == name.Trim().ToLower()).FirstOrDefault();
+            if(category is not null)
+                throw new InvalidEntryException("Category already exists. Try a different name");
+        }
     }
 }

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using InventoryApplication.Exceptions;
 
 namespace InventoryApplication.DataAccess
 {
@@ -48,27 +49,28 @@ namespace InventoryApplication.DataAccess
             }
         }
 
-        public async void UpdateProduct(Products Value)
+        public async Task<List<Categories>> UpdateProduct(Products Value)
         {
             using (IDbConnection con = new SQLiteConnection(LoadConnectionString()))
             {
-            await Task.Run(() => CheckIfCategoryIdStillTheSameForProduct(con, Value.CategoryId, Value.ProductId));
+            var categories = await Task.Run(() => CheckIfCategoryIdStillTheSameForProduct(con, Value.CategoryId, Value.ProductId));
                 con.Execute($"update Products set Name = @Name, CategoryId = @CategoryId, Quantity = @Quantity, Price = @Price where ProductId = {Value.ProductId}", Value);
+                return categories;
             }
             
         }
 
-        private void CheckIfCategoryIdStillTheSameForProduct(IDbConnection con, int CategoryId, int ProductId)
+        private List<Categories> CheckIfCategoryIdStillTheSameForProduct(IDbConnection con, int CategoryId, int ProductId)
         {
                 var product = con.Query<Products>($"select * from Products where ProductId = {ProductId}", new DynamicParameters()).First();
                 if (CategoryId != product.CategoryId) //product.CategoryId = Previous Category Id
                 {
                 con.Execute($"update Categories set Total = Total - 1 where CategoryId = {product.CategoryId}", new Categories() { CategoryId = product.CategoryId });
-                    //var category = con.Query<Categories>($"select * from Categories where CategoryId = {product.CategoryId}").First();
-                    //var new_total = category.Total -= 1;
-                    //con.Execute($"update Categories set Total = {new_total} where CategoryId = {product.CategoryId}", new Categories() { Total = new_total });
+                con.Execute($"update Categories set Total = Total + 1 where CategoryId = {CategoryId}");
                 }
-            
+                var result = con.Query<Categories>("select * from Categories");
+                return result.ToList();
+
         }
 
         private void SubtractCategoryWhenProductDeleted(IDbConnection con, int CategoryId)

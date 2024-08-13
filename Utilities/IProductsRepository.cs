@@ -7,6 +7,6 @@ namespace InventoryApplication.Utilities
         Task<Products> AddProduct(Products product);
         Task DeleteProduct(Products product);
         IEnumerable<IProducts> GetProducts();
-        void EditProduct(Products product);
+        Task<List<Categories>> EditProduct(Products product);
     }
 }

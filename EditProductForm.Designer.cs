@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditProductForm));
             label1 = new Label();
             label2 = new Label();
             editName = new TextBox();
@@ -167,6 +168,7 @@
             Controls.Add(editName);
             Controls.Add(label2);
             Controls.Add(label1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximumSize = new Size(617, 440);
             MinimumSize = new Size(617, 440);
             Name = "EditProductForm";

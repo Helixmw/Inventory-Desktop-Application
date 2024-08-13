@@ -4,7 +4,6 @@ using InventoryApplication.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -43,12 +42,13 @@ namespace InventoryApplication.Utilities
             }
         }
 
-        public void EditProduct(Products product)
+        public async Task<List<Categories>> EditProduct(Products product)
         {
             try
             {
 
-             _productsAccess.UpdateProduct(product);
+            var categories = await _productsAccess.UpdateProduct(product);
+                return categories;
             }
             catch (Exception)
             {

@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CreateCategoryForm));
             categoryName = new TextBox();
             createButton = new Button();
             editButton = new Button();
@@ -129,6 +130,7 @@
             ClientSize = new Size(959, 523);
             Controls.Add(groupBox2);
             Controls.Add(groupBox1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximumSize = new Size(981, 579);
             MinimumSize = new Size(981, 579);
             Name = "CreateCategoryForm";
